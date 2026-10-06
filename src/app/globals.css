@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+@theme inline {
+  --font-display: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --color-bg: #0e0e0e;
+  --color-surface: #161616;
+  --color-card: #1f1f1f;
+  --color-line: #2a2a2a;
+  --color-ink: #f5f5f5;
+  --color-muted: #9a9a9a;
+  --color-dim: #5c5c5c;
+  --color-violet: #7b5cff;
+  --color-violet-deep: #5530a7;
+  --color-lavender: #b49cff;
+  --color-lilac: #c9bcff;
+  --color-current: #e3242b;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0e0e0e;
+  --violet: #7b5cff;
+  --curtain: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Large monitors: rem-based layout scales with the screen. */
+@media (min-width: 1600px) {
+  html {
+    font-size: clamp(16px, 1vw, 28px);
+  }
+}
+
+html {
+  background: #0e0e0e;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #0e0e0e;
+  color: #f5f5f5;
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #7b5cff;
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #7b5cff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0e0e0e;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 999px;
+  border: 2px solid #0e0e0e;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5530a7;
+}
+
+/* Custom cursor hides the native one only once it is actually drawn. */
+body.custom-cursor-active,
+body.custom-cursor-active * {
+  cursor: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+.text-stroke {
+  -webkit-text-stroke: 1.5px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+.text-stroke-thin {
+  -webkit-text-stroke: 1px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+.group:hover .group-hover-fill {
+  -webkit-text-fill-color: currentColor;
+}
+.text-stroke,
+.group-hover-fill {
+  transition: -webkit-text-fill-color 0.5s var(--curtain), color 0.5s var(--curtain);
+}
+
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cursor spotlight for cards (set --mx / --my on mousemove). */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(15rem circle at var(--mx, 50%) var(--my, 50%), rgba(123, 92, 255, 0.2), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Rotating conic border */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#1a1a1a, #1a1a1a) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        #2a2a2a 0%,
+        #2a2a2a 55%,
+        #5530a7 65%,
+        #7b5cff 75%,
+        #c9bcff 80%,
+        #7b5cff 85%,
+        #2a2a2a 95%
+      )
+      border-box;
+  animation: border-spin 6s linear infinite;
+}
+
+.github-card {
+  border: 1.5px solid transparent;
+  background:
+    radial-gradient(120% 140% at 15% 0%, #3a1f7a 0%, #24164d 35%, #140d2b 70%, #0e0e0e 100%) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        rgba(123, 92, 255, 0.15) 0%,
+        rgba(123, 92, 255, 0.15) 50%,
+        #7b5cff 65%,
+        #e6dfff 75%,
+        #7b5cff 85%,
+        rgba(123, 92, 255, 0.15) 100%
+      )
+      border-box;
+  animation: border-spin 5s linear infinite;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes                                                           */
+/* ------------------------------------------------------------------ */
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -1%); }
+  100% { transform: translate(1%, 3%); }
+}
+.grain {
+  animation: grain-shift 0.4s steps(4) infinite;
+}
+
+@keyframes scroll-hint {
+  0% { transform: scaleX(0); transform-origin: left; }
+  45% { transform: scaleX(1); transform-origin: left; }
+  55% { transform: scaleX(1); transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}
+.scroll-hint {
+  animation: scroll-hint 2.2s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+@keyframes spin-star {
+  to { transform: rotate(360deg); }
+}
+.spin-star {
+  display: inline-block;
+  animation: spin-star 6s linear infinite;
+}
+.spin-star-reverse {
+  display: inline-block;
+  animation: spin-star 6s linear infinite reverse;
+}
+
+/* Hero halo */
+.halo-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 22.5%,
+    rgba(140, 110, 255, 0.55) 25.5%,
+    rgba(123, 92, 255, 0.22) 37.5%,
+    rgba(123, 92, 255, 0.08) 49%,
+    transparent 64%
+  );
+  animation: halo-breathe 6s ease-in-out infinite;
+}
+@keyframes halo-breathe {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.halo-wave {
+  position: absolute;
+  inset: 37.5%;
+  border-radius: 50%;
+  border: 3px solid rgba(170, 145, 255, 0.95);
+  box-shadow:
+    0 0 40px 8px rgba(123, 92, 255, 0.6),
+    inset 0 0 36px 6px rgba(123, 92, 255, 0.45);
+  opacity: 0;
+  animation: halo-wave 11s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes halo-wave {
+  0% { transform: scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  60% { opacity: 0.4; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+
+.halo-mask {
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 0 48%, transparent 58%),
+    linear-gradient(to right, #000 0 32%, transparent 36% 64%, #000 68% 100%);
+  mask-image:
+    linear-gradient(to bottom, #000 0 48%, transparent 58%),
+    linear-gradient(to right, #000 0 32%, transparent 36% 64%, #000 68% 100%);
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+/* GitHub CTA */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee-left {
+  animation: marquee-left 28s linear infinite;
+}
+.marquee-right {
+  animation: marquee-right 28s linear infinite;
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-120%) skewX(-20deg); }
+  35%, 100% { transform: translateX(260%) skewX(-20deg); }
+}
+.sheen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+  animation: sheen 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-0.75rem) rotate(-4deg); }
+}
+.float-y {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-14deg); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(4deg); }
+}
+.group:hover .wiggle-on-hover {
+  animation: wiggle 0.7s ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain,
+  .scroll-hint,
+  .spin-star,
+  .spin-star-reverse,
+  .halo-glow,
+  .halo-wave,
+  .animated-border,
+  .github-card,
+  .marquee-left,
+  .marquee-right,
+  .sheen::after,
+  .float-y,
+  .pulse-dot,
+  .group:hover .wiggle-on-hover,
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
+  }
+  .halo-wave {
+    opacity: 0;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
